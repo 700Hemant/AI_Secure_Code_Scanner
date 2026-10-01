@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
 
-const API_BASE = "https://ai-secure-code-scanner.onrender.com";
+const API_BASE = "https://ai-secure-code-scanner3.onrender.com";
 
 /* =========================================================
    HELPERS
