@@ -18,8 +18,7 @@ from dotenv import load_dotenv
 
 from app.scanner import scan_project
 
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+
 # =========================================================
 # BASE / ENVIRONMENT
 # =========================================================
@@ -35,12 +34,15 @@ load_dotenv(ENV_FILE)
 # =========================================================
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5-mini").strip()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash").strip()
 
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "").strip()
+
 MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-small-latest").strip()
 
 
@@ -339,13 +341,6 @@ def safe_extract_zip(zip_path, destination):
 
 @app.get("/")
 def root():
-    # Serve the React production app when the frontend build is present.
-    index_file = Path(__file__).resolve().parent.parent / "static" / "index.html"
-
-    if index_file.exists():
-        return FileResponse(index_file)
-
-    # Local/backend-only fallback.
     return {
         "name": "AI Secure Code Scanner API",
         "status": "running",
@@ -1736,53 +1731,6 @@ async def ai_explain(payload: dict):
         ),
         "errors": errors,
     }
-
-
-# =========================================================
-# FRONTEND - REACT PRODUCTION BUILD
-# =========================================================
-
-FRONTEND_DIR = Path(__file__).resolve().parent.parent / "static"
-
-if FRONTEND_DIR.exists():
-
-    assets_dir = FRONTEND_DIR / "assets"
-
-    if assets_dir.exists():
-        app.mount(
-            "/assets",
-            StaticFiles(directory=assets_dir),
-            name="assets",
-        )
-
-    @app.get("/{full_path:path}")
-    async def serve_frontend(full_path: str):
-
-        # Existing API routes must continue to work.
-        if full_path.startswith("api/"):
-            raise HTTPException(
-                status_code=404,
-                detail="API endpoint not found."
-            )
-
-        requested_file = FRONTEND_DIR / full_path
-
-        if (
-            full_path
-            and requested_file.exists()
-            and requested_file.is_file()
-        ):
-            return FileResponse(requested_file)
-
-        index_file = FRONTEND_DIR / "index.html"
-
-        if index_file.exists():
-            return FileResponse(index_file)
-
-        raise HTTPException(
-            status_code=404,
-            detail="Frontend build not found."
-        )
 
 
 if __name__ == "__main__":

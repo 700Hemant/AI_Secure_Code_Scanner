@@ -1,19 +1,37 @@
-backend/.venv/
-backend/.env
-backend/.env.*
-!backend/.env.example
-
-backend/data/
-backend/*.db
-
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
+.venv/
+venv/
+env/
 
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Node
 node_modules/
+frontend/node_modules/
+
+# Build
 dist/
 build/
+frontend/dist/
 
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
 .vscode/
 .idea/
-
-*.log
